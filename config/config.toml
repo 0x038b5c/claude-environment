@@ -14,7 +14,9 @@ python = [
 finish = "/opt/setup/scripts/finish.sh"
 bash_profile = "/opt/setup/scripts/bash_profile.sh"
 ld_so_preload = ["/opt/setup/lib/init_hook.so"]
-services = []
+services = [
+    "logsync",
+]
 
 [environment.state]
 repo = "https://github.com/0x038b5c/claude-state"

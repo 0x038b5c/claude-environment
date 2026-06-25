@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # log reboot
-echo '-- Reboot Triggered (in 15s) --' >> /mnt/user-data/outputs/command.log
+echo '-- Reboot Triggered (in 15s) --' >> /var/log/command.log
 sleep 10
 
 # stop services

@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+
+SRC="/var/log/command.log"
+DST="/mnt/user-data/outputs/command.log"
+INTERVAL=10
+
+exec 2>&1
+
+echo "logsync: starting, syncing every ${INTERVAL}s"
+
+while true; do
+    if [ -f "$SRC" ]; then
+        cp -f "$SRC" "$DST" || echo "logsync: cp failed (exit $?)"
+    else
+        echo "logsync: source not found: $SRC"
+    fi
+    sleep "$INTERVAL"
+done
