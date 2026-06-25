@@ -1,0 +1,2 @@
+#!/bin/bash
+PYTHONPATH=/opt/state python3 -m src.tool

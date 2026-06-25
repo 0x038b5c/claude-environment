@@ -1,0 +1,20 @@
+[environment.packages]
+system = [
+    "age",
+    "gh",
+    "runit",
+]
+
+python = [
+    "python-slugify",
+    "tomlkit",
+]
+
+[environment.runtime]
+finish = "/opt/setup/scripts/finish.sh"
+bash_profile = "/opt/setup/scripts/bash_profile.sh"
+ld_so_preload = ["/opt/setup/lib/init_hook.so"]
+services = []
+
+[environment.state]
+repo = "https://github.com/0x038b5c/claude-state"

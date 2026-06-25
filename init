@@ -1,0 +1,2 @@
+#!/bin/bash
+PYTHONPATH=/opt/setup python3 -m src.provision
