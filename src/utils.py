@@ -78,8 +78,21 @@ class LogFormatter(logging.Formatter):
         ).isoformat(timespec="milliseconds")
         return f"{ts} {record.levelname} {record.name}: {record.getMessage()}"
 
+class ReopeningFileHandler(logging.Handler):
+    def __init__(self, log_file: str) -> None:
+        super().__init__()
+        self.log_file = log_file
+
+    def emit(self, record: logging.LogRecord) -> None:
+        try:
+            msg = self.format(record)
+            with open(self.log_file, "a") as f:
+                f.write(msg + "\n")
+        except Exception:
+            self.handleError(record)
+
 def init_logger(log_file, level = logging.INFO):
-    handler = logging.FileHandler(log_file)
+    handler = ReopeningFileHandler(log_file)
     handler.setFormatter(LogFormatter())
     logging.root.addHandler(handler)
     logging.root.setLevel(level)
