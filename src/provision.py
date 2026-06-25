@@ -62,6 +62,13 @@ def main():
         local_settings,
     )
 
+    # write final settings
+    Path("/mnt/user-data/outputs/settings.json").write_text(json.dumps(
+        settings,
+        indent=4,
+        sort_keys=True,
+    ))
+
     # update the system
     run(["apt", "update"], check=False)
     logger.info("System updated")
@@ -177,13 +184,6 @@ def main():
         except subprocess.CalledProcessError as e:
             log_run_error(logger, "Failed to clone state repo", e)
             raise
-
-    # write final settings
-    Path("/mnt/user-data/outputs/settings.json").write_text(json.dumps(
-        settings,
-        indent=4,
-        sort_keys=True,
-    ))
 
     finish_exe = env_runtime_settings.get("finish")
 
