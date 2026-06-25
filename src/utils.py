@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import logging
+import os
 import subprocess
 import tomllib
 
@@ -20,6 +21,7 @@ def run(command, *, text=True, check=True, capture_output=True, **kwargs):
         text=text,
         check=check,
         capture_output=capture_output,
+        env=os.environ.copy(),
         **kwargs,
     )
 
