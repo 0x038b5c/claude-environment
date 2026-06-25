@@ -148,12 +148,18 @@ def main():
     logger.info("Created service directory /opt/service")
 
     if services:
-        for service_path in services:
-            service_name = Path(service_path).name
+        logger.info("Installing services")
+        for service_name in services:
+            service_path = (SETUP_DIR / f"service/{service_name}").absolute()
+
+            if not service_path.exists():
+                logger.warning("Service '%s' does not exist, skipping", service_path)
+                continue
+
             service_link = service_dir / service_name
             service_link.unlink(missing_ok=True)
             service_link.symlink_to(service_path)
-            logger.info("Installed service %s at %s", service_name, service_link.absolute())
+            logger.info("Installed service %s at '%s'", service_name, service_link.absolute())
 
     env_git_settings = env_settings.get("git", {})
     git_username = env_git_settings.get("name", "Claude")
