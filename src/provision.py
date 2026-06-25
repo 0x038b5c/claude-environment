@@ -95,12 +95,13 @@ def main():
 
     # decrypt credentials
     if secrets_dir.exists():
+        logger.info("Decrypting secrets")
         creds_dir.mkdir(parents=True, exist_ok=True)
         for secret in secrets_dir.iterdir():
             try:
                 secret_abs = str(secret.absolute())
                 cred_abs = str((creds_dir / secret.stem).absolute())
-                run([ "age", "-d", "-i", AGE_KEY, secret_abs, "-o", cred_abs ])
+                run([ "age", "-d", "-i", AGE_KEY, "-o", cred_abs, secret_abs ])
                 logger.info("Decrypted secret '%s' -> '%s'", secret_abs, cred_abs)
             except subprocess.CalledProcessError as e:
                 logger.warning(
