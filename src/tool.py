@@ -9,7 +9,7 @@ SETUP_DIR = Path(__file__).parent.parent
 def main():
     ...
 
-@main.command("retart")
+@main.command()
 def restart():
     subprocess.Popen(
         [SETUP_DIR / "scripts/restart.sh"],

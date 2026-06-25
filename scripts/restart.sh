@@ -2,7 +2,7 @@
 sleep 10
 
 # stop services
-pkill runsvdir
+pkill runsvdir || true
 sleep 2
 
 # shutdown
