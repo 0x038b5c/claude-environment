@@ -39,7 +39,7 @@ def main():
         logger.error("Missing `uuid` in `[account]` in settings")
         raise KeyError("uuid")
 
-    config_dir = local_accounts_settings.get("config_dir")
+    config_dir = local_accounts_settings.get("config_dir", "/opt/setup/config")
     config_repo = local_accounts_settings.get("config_repo")
 
     # clone config repo
@@ -50,6 +50,7 @@ def main():
 
         try:
             run(["git", "clone", config_repo, config_dir, "--depth=1"])
+            logger.info("Cloned config repo: %s", config_dir)
         except subprocess.CalledProcessError as e:
             log_run_error(logger, "Failed to clone config repo", e)
             raise
@@ -89,7 +90,7 @@ def main():
 
     env_settings = settings.get("environment", {})
     env_creds_settings = env_settings.get("credentials", {})
-    secrets_dir = Path(env_creds_settings.get("secrets_dir", SETUP_DIR / "secrets"))
+    secrets_dir = Path(env_creds_settings.get("secrets_dir", SETUP_DIR / "creds"))
     creds_dir = Path(env_creds_settings.get("creds_dir", Path("/opt/creds")))
 
     # decrypt credentials
@@ -136,12 +137,15 @@ def main():
     # install services
     service_dir = Path("/opt/service")
     service_dir.mkdir(parents=True, exist_ok=True)
+    logger.info("Created service directory /opt/service")
+
     if services:
         for service_path in services:
             service_name = Path(service_path).name
             service_link = service_dir / service_name
             service_link.unlink(missing_ok=True)
             service_link.symlink_to(service_path)
+            logger.info("Installed service %s at %s", service_name, service_link.absolute())
 
     env_git_settings = env_settings.get("git", {})
     git_username = env_git_settings.get("name", "Claude")
@@ -150,6 +154,7 @@ def main():
     # configure git
     run(["git", "config", "--global", "user.name", git_username])
     run(["git", "config", "--global", "user.email", git_email])
+    logger.info("Configured git author: %s <%s>", git_username, git_email)
 
     # configure GitHub
     github_token = Path(env_creds_settings.get("github_token", creds_dir / "github_token"))
@@ -157,6 +162,7 @@ def main():
         github_token_link = Path("/opt/github_token")
         github_token_link.unlink(missing_ok=True)
         github_token_link.symlink_to(github_token)
+        logger.info("Symlinked github token to /opt/github_token")
 
     env_state_settings = env_settings.get("state", {})
     state_repo = env_state_settings.get("repo")
@@ -166,6 +172,7 @@ def main():
     if state_repo:
         try:
             run(["git", "clone", state_repo, state_dir, "--depth=1"])
+            logger.info("Cloned state repo: %s", state_dir)
         except subprocess.CalledProcessError as e:
             log_run_error(logger, "Failed to clone state repo", e)
             raise
@@ -181,6 +188,7 @@ def main():
 
     # run finish script
     if finish_exe:
+        logger.info("Starting finish script")
         subprocess.Popen(
             [finish_exe],
             stdout=subprocess.DEVNULL,
