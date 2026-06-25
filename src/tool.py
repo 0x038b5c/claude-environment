@@ -18,3 +18,6 @@ def restart():
         stdin=subprocess.DEVNULL,
         start_new_session=True,
     )
+
+if __name__ == "__main__":
+    main()
