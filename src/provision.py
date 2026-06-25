@@ -172,7 +172,7 @@ def main():
     # clone state repo
     if state_repo:
         try:
-            run(["git", "clone", state_repo, state_dir, "--depth=1"])
+            run(f"git clone {state_repo} {state_dir} --depth=1", shell=True)
             logger.info("Cloned state repo: %s", state_dir)
         except subprocess.CalledProcessError as e:
             log_run_error(logger, "Failed to clone state repo", e)
